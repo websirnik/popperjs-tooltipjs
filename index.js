@@ -330,9 +330,12 @@
                 this._isOpen = false;
 
                 // hide tooltipNode
-                this._tooltipNode.style.display = 'none';
-                this._tooltipNode.setAttribute('aria-hidden', 'true');
-
+                // fix for https://rollbar.com/RELAYTO/relayto.com/items/21544/
+                if (this._tooltipNode && this._tooltipNode.style){
+                    this._tooltipNode.style.display = 'none';
+                    this._tooltipNode.setAttribute('aria-hidden', 'true');
+                }
+            
                 return this;
             }
         }, {
