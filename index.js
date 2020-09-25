@@ -274,7 +274,9 @@
                     this._tooltipNode.style.display = '';
                     this._tooltipNode.setAttribute('aria-hidden', 'false');
                     this.popperInstance.update();
-                    options.onShow();
+                    if(options.onShow){
+                        options.onShow();
+                    }
                     return this;
                 }
 
@@ -320,7 +322,9 @@
 
                 this._tooltipNode = tooltipNode;
 
-                options.onShow();
+                if(options.onShow){
+                    options.onShow();
+                }
 
                 return this;
             }
@@ -340,7 +344,9 @@
                     this._tooltipNode.style.display = 'none';
                     this._tooltipNode.setAttribute('aria-hidden', 'true');
                 }
-                options.onHide();
+                if(options.onHide){
+                    options.onHide();
+                }
                 return this;
             }
         }, {
