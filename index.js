@@ -95,7 +95,9 @@
         title: '',
         template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
         trigger: 'hover focus',
-        offset: 0
+        offset: 0,
+        onShow: function(){},
+        onHide: function(){}
     };
 
     var Tooltip = function() {
@@ -272,6 +274,7 @@
                     this._tooltipNode.style.display = '';
                     this._tooltipNode.setAttribute('aria-hidden', 'false');
                     this.popperInstance.update();
+                    options.onShow();
                     return this;
                 }
 
@@ -317,11 +320,13 @@
 
                 this._tooltipNode = tooltipNode;
 
+                options.onShow();
+
                 return this;
             }
         }, {
             key: '_hide',
-            value: function _hide() /*reference, options*/ {
+            value: function _hide(options) /*reference, options*/ {
                 // don't hide if it's already hidden
                 if (!this._isOpen) {
                     return this;
@@ -335,7 +340,7 @@
                     this._tooltipNode.style.display = 'none';
                     this._tooltipNode.setAttribute('aria-hidden', 'true');
                 }
-            
+                options.onHide();
                 return this;
             }
         }, {
@@ -539,7 +544,7 @@
         };
 
         this.hide = function() {
-            return _this5._hide();
+            return _this5._hide(_this5.options);
         };
 
         this.dispose = function() {
