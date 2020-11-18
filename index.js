@@ -67,12 +67,6 @@
         };
     }();
 
-
-
-
-
-
-
     var _extends = Object.assign || function(target) {
         for (var i = 1; i < arguments.length; i++) {
             var source = arguments[i];
@@ -344,7 +338,7 @@
                     this._tooltipNode.style.display = 'none';
                     this._tooltipNode.setAttribute('aria-hidden', 'true');
                 }
-                if(options.onHide){
+                if(options && options.onHide){
                     options.onHide();
                 }
                 return this;
