@@ -266,6 +266,7 @@
                 // if the tooltipNode already exists, just show it
                 if (this._tooltipNode) {
                     this._tooltipNode.style.display = '';
+                    resetAnimationDirection(this._tooltipNode);
                     this._tooltipNode.setAttribute('aria-hidden', 'false');
                     this.popperInstance.update();
                     if(options.onShow){
@@ -301,7 +302,7 @@
                     arrow: {
                         element: this.arrowSelector
                     },
-                    offset: {
+                   offset: {
                         offset: options.offset
                     }
                 });
@@ -335,12 +336,18 @@
                 // hide tooltipNode
                 // fix for https://rollbar.com/RELAYTO/relayto.com/items/21544/
                 if (this._tooltipNode && this._tooltipNode.style){
-                    this._tooltipNode.style.display = 'none';
-                    this._tooltipNode.setAttribute('aria-hidden', 'true');
+                    var element = this._tooltipNode;
+                    reverseAnimation(element);
+                    setTimeout(function(){
+                        resetAnimationDirection(element);
+                        element.style.display = 'none';
+                        element.setAttribute('aria-hidden', 'true');
+                        if(options && options.onHide){
+                            options.onHide();
+                        }
+                    }, 300);
                 }
-                if(options && options.onHide){
-                    options.onHide();
-                }
+                
                 return this;
             }
         }, {
@@ -518,6 +525,18 @@
         }]);
         return Tooltip;
     }();
+
+    function reverseAnimation(element){
+        var childClass = element.firstChild.className;
+        element.firstChild.style.animationDirection = 'reverse';
+        element.firstChild.className = '';
+        void element.firstChild.offsetWidth;
+        element.firstChild.className = childClass;
+    }
+
+    function resetAnimationDirection(element){
+        element.firstChild.style.animationDirection = '';
+    }
 
     /**
      * Placement function, its context is the Tooltip instance.
