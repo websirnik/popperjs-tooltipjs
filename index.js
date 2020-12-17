@@ -266,6 +266,7 @@
                 // if the tooltipNode already exists, just show it
                 if (this._tooltipNode) {
                     this._tooltipNode.style.display = '';
+                    resetAnimationDirection(this._tooltipNode);
                     this._tooltipNode.setAttribute('aria-hidden', 'false');
                     this.popperInstance.update();
                     if(options.onShow){
