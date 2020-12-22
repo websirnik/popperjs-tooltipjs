@@ -266,6 +266,7 @@
                 // if the tooltipNode already exists, just show it
                 if (this._tooltipNode) {
                     this._tooltipNode.style.display = '';
+                    clearAnimTimeout(this);
                     resetAnimationDirection(this._tooltipNode);
                     this._tooltipNode.setAttribute('aria-hidden', 'false');
                     this.popperInstance.update();
@@ -338,7 +339,8 @@
                 if (this._tooltipNode && this._tooltipNode.style){
                     var element = this._tooltipNode;
                     reverseAnimation(element);
-                    setTimeout(function(){
+                    clearAnimTimeout(this);
+                    this._exitAnimTimeout = setTimeout(function(){
                         resetAnimationDirection(element);
                         element.style.display = 'none';
                         element.setAttribute('aria-hidden', 'true');
@@ -536,6 +538,12 @@
 
     function resetAnimationDirection(element){
         element.firstChild.style.animationDirection = '';
+    }
+
+    function clearAnimTimeout(tooltip){
+        if(tooltip._exitAnimTimeout){
+            clearTimeout(tooltip._exitAnimTimeout);
+        }
     }
 
     /**
