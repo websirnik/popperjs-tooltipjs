@@ -316,6 +316,14 @@
 
                 this.popperInstance = new Popper(reference, tooltipNode, this._popperOptions);
 
+                // Popper initialization overhead is causing placement flicker in some situations.
+                // Added a timeout for the first show to avoid this, allowing the browser
+                // to update the DOM and PopperJs to update the placement. 
+                if(tooltipNode.style && tooltipNode.style.opacity){
+                    tooltipNode.style.opacity = 0;
+                    setTimeout(function(){ tooltipNode.style.opacity = null }, 100);
+                }
+                
                 this._tooltipNode = tooltipNode;
 
                 if(options.onShow){
