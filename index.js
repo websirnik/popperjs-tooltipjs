@@ -266,11 +266,10 @@
                 // if the tooltipNode already exists, just show it
                 if (this._tooltipNode) {
                     this._tooltipNode.style.display = '';
-                    clearAnimTimeout(this);
                     resetAnimationDirection(this._tooltipNode);
                     this._tooltipNode.setAttribute('aria-hidden', 'false');
                     this.popperInstance.update();
-                    if(options.onShow){
+                    if(options && options.onShow){
                         options.onShow();
                     }
                     return this;
@@ -338,16 +337,15 @@
                 // fix for https://rollbar.com/RELAYTO/relayto.com/items/21544/
                 if (this._tooltipNode && this._tooltipNode.style){
                     var element = this._tooltipNode;
-                    reverseAnimation(element);
-                    clearAnimTimeout(this);
-                    this._exitAnimTimeout = setTimeout(function(){
-                        resetAnimationDirection(element);
-                        element.style.display = 'none';
-                        element.setAttribute('aria-hidden', 'true');
-                        if(options && options.onHide){
-                            options.onHide();
-                        }
-                    }, 300);
+                    reverseAnimation(element)
+                        .then(function(){
+                            resetAnimationDirection(element);
+                            element.style.display = 'none';
+                            element.setAttribute('aria-hidden', 'true');
+                            if(options && options.onHide){
+                                options.onHide();
+                            }
+                        });
                 }
                 
                 return this;
@@ -530,20 +528,28 @@
 
     function reverseAnimation(element){
         var childClass = element.firstChild.className;
-        element.firstChild.style.animationDirection = 'reverse';
-        element.firstChild.className = '';
-        void element.firstChild.offsetWidth;
-        element.firstChild.className = childClass;
+        var animatedElement = element.firstChild;
+        animatedElement.style.animationDirection = 'reverse';
+
+        // Force DOM update
+        animatedElement.className = '';
+        void animatedElement.offsetWidth;
+        animatedElement.className = childClass;
+
+        var p = new Promise(function(resolve, reject){
+            animatedElement.onanimationend = function(){
+                animatedElement.onanimationend = null;
+                console.log('[popperjs-tooltips] exit animation finished');
+                resolve();
+            }
+        })
+
+        return p;
     }
 
     function resetAnimationDirection(element){
         element.firstChild.style.animationDirection = '';
-    }
-
-    function clearAnimTimeout(tooltip){
-        if(tooltip._exitAnimTimeout){
-            clearTimeout(tooltip._exitAnimTimeout);
-        }
+        element.firstChild.onanimationend = null;
     }
 
     /**
