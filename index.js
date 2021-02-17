@@ -527,14 +527,12 @@
     }();
 
     function reverseAnimation(element){
-        var childClass = element.firstChild.className;
         var animatedElement = element.firstChild;
         animatedElement.style.animationDirection = 'reverse';
 
-        // Force DOM update
-        animatedElement.className = '';
-        void animatedElement.offsetWidth;
-        animatedElement.className = childClass;
+        // Force DOM update. The animation can only
+        // restart after this.
+        forceElementUpdate(animatedElement);
 
         var p = new Promise(function(resolve, reject){
             animatedElement.onanimationend = function(){
@@ -548,8 +546,17 @@
     }
 
     function resetAnimationDirection(element){
-        element.firstChild.style.animationDirection = '';
-        element.firstChild.onanimationend = null;
+        var animatedElement = element.firstChild;
+        animatedElement.style.animationDirection = '';
+        animatedElement.onanimationend = null;
+        forceElementUpdate(animatedElement);
+    }
+
+    function forceElementUpdate(element){
+        var className = element.className;
+        element.className = '';
+        void element.offsetWidth;
+        element.className = className;
     }
 
     /**
