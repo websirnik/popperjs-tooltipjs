@@ -264,65 +264,63 @@
                 this._isOpen = true;
 
                 // if the tooltipNode already exists, just show it
-                requestAnimationFrame(() => {
-                    if (this._tooltipNode) {
-                        this._tooltipNode.style.display = '';
-                        // resetAnimationDirection(this._tooltipNode);
-                        this._tooltipNode.setAttribute('aria-hidden', 'false');
-                        // this.popperInstance.update();
-                        if(options && options.onShow){
-                            options.onShow();
-                        }
-                        return this;
-                    }
-    
-                    // get title
-                    var title = options.title || reference.getAttribute('title');
-    
-                    // don't show tooltip if no title is defined
-                    if (!title) {
-                        return this;
-                    }
-    
-                    // create tooltip node
-                    var tooltipNode = this._create(reference, options.template, title, options.html);
-    
-                    // Add `aria-describedby` to our reference element for accessibility reasons
-                    reference.setAttribute('aria-describedby', tooltipNode.id);
-    
-                    // append tooltip to container
-                    var container = this._findContainer(options.container, reference);
-    
-                    this._append(tooltipNode, container);
-    
-                    this._popperOptions = _extends({}, options.popperOptions, {
-                        placement: options.placement
-                    });
-    
-                    this._popperOptions.modifiers = _extends({}, this._popperOptions.modifiers, {
-                        arrow: {
-                            element: this.arrowSelector
-                        },
-                       offset: {
-                            offset: options.offset
-                        }
-                    });
-    
-                    if (options.boundariesElement) {
-                        this._popperOptions.modifiers.preventOverflow = {
-                            boundariesElement: options.boundariesElement
-                        };
-                    }
-    
-                    this.popperInstance = new Popper(reference, tooltipNode, this._popperOptions);
-    
-                    this._tooltipNode = tooltipNode;
-    
-                    if(options.onShow){
+                if (this._tooltipNode) {
+                    this._tooltipNode.style.display = '';
+                    // resetAnimationDirection(this._tooltipNode);
+                    this._tooltipNode.setAttribute('aria-hidden', 'false');
+                    requestAnimationFrame(()=>this.popperInstance.update());
+                    if(options && options.onShow){
                         options.onShow();
                     }
+                    return this;
+                }
+
+                // get title
+                var title = options.title || reference.getAttribute('title');
+
+                // don't show tooltip if no title is defined
+                if (!title) {
+                    return this;
+                }
+
+                // create tooltip node
+                var tooltipNode = this._create(reference, options.template, title, options.html);
+
+                // Add `aria-describedby` to our reference element for accessibility reasons
+                reference.setAttribute('aria-describedby', tooltipNode.id);
+
+                // append tooltip to container
+                var container = this._findContainer(options.container, reference);
+
+                this._append(tooltipNode, container);
+
+                this._popperOptions = _extends({}, options.popperOptions, {
+                    placement: options.placement
                 });
-                
+
+                this._popperOptions.modifiers = _extends({}, this._popperOptions.modifiers, {
+                    arrow: {
+                        element: this.arrowSelector
+                    },
+                   offset: {
+                        offset: options.offset
+                    }
+                });
+
+                if (options.boundariesElement) {
+                    this._popperOptions.modifiers.preventOverflow = {
+                        boundariesElement: options.boundariesElement
+                    };
+                }
+
+                this.popperInstance = new Popper(reference, tooltipNode, this._popperOptions);
+
+                this._tooltipNode = tooltipNode;
+
+                if(options.onShow){
+                    options.onShow();
+                }
+
                 return this;
             }
         }, {
@@ -337,14 +335,13 @@
 
                 // hide tooltipNode
                 // fix for https://rollbar.com/RELAYTO/relayto.com/items/21544/
-                
                 if (this._tooltipNode && this._tooltipNode.style){
                     var element = this._tooltipNode;
-                        element.style.display = 'none';
-                        element.setAttribute('aria-hidden', 'true');
-                        if(options && options.onHide){
-                            options.onHide();
-                        }
+                    element.style.display = 'none';
+                    element.setAttribute('aria-hidden', 'true');
+                    if(options && options.onHide){
+                        options.onHide();
+                    }
                 }
                 
                 return this;
@@ -636,3 +633,8 @@
     return Tooltip;
 
 })));
+
+
+function isSafari() {
+    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+}
