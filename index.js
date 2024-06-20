@@ -48,6 +48,10 @@
             throw new TypeError("Cannot call a class as a function");
         }
     };
+    
+    function isSafari() {
+        return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }
 
     var createClass = function() {
         function defineProperties(target, props) {
@@ -634,7 +638,3 @@
 
 })));
 
-
-function isSafari() {
-    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-}
