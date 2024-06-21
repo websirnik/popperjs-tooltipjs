@@ -48,6 +48,10 @@
             throw new TypeError("Cannot call a class as a function");
         }
     };
+    
+    function isSafari() {
+        return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }
 
     var createClass = function() {
         function defineProperties(target, props) {
@@ -266,9 +270,9 @@
                 // if the tooltipNode already exists, just show it
                 if (this._tooltipNode) {
                     this._tooltipNode.style.display = '';
-                    resetAnimationDirection(this._tooltipNode);
+                    // resetAnimationDirection(this._tooltipNode);
                     this._tooltipNode.setAttribute('aria-hidden', 'false');
-                    this.popperInstance.update();
+                    requestAnimationFrame(()=>this.popperInstance.update());
                     if(options && options.onShow){
                         options.onShow();
                     }
@@ -336,16 +340,16 @@
                 // hide tooltipNode
                 // fix for https://rollbar.com/RELAYTO/relayto.com/items/21544/
                 if (this._tooltipNode && this._tooltipNode.style){
+
+                    // Removed the reverse animation code because it was
+                    // making Safari browser get laggy when there was miltiple
+                    // tooltips on the page.
                     var element = this._tooltipNode;
-                    reverseAnimation(element)
-                        .then(function(){
-                            resetAnimationDirection(element);
-                            element.style.display = 'none';
-                            element.setAttribute('aria-hidden', 'true');
-                            if(options && options.onHide){
-                                options.onHide();
-                            }
-                        });
+                    element.style.display = 'none';
+                    element.setAttribute('aria-hidden', 'true');
+                    if(options && options.onHide){
+                        options.onHide();
+                    }
                 }
                 
                 return this;
@@ -526,7 +530,11 @@
         return Tooltip;
     }();
 
+
+    // Not calling the reverse animation because it was making the
+    // Safari browser get laggy when there was multiple tooltips on the page.
     function reverseAnimation(element){
+        
         var animatedElement = element.firstChild;
         animatedElement.style.animationDirection = 'reverse';
 
@@ -636,4 +644,4 @@
     return Tooltip;
 
 })));
-//# sourceMappingURL=tooltip.js.map
+
