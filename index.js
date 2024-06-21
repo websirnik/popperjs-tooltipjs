@@ -340,6 +340,10 @@
                 // hide tooltipNode
                 // fix for https://rollbar.com/RELAYTO/relayto.com/items/21544/
                 if (this._tooltipNode && this._tooltipNode.style){
+
+                    // Removed the reverse animation code because it was
+                    // making Safari browser get laggy when there was miltiple
+                    // tooltips on the page.
                     var element = this._tooltipNode;
                     element.style.display = 'none';
                     element.setAttribute('aria-hidden', 'true');
@@ -526,6 +530,9 @@
         return Tooltip;
     }();
 
+
+    // Not calling the reverse animation because it was making the
+    // Safari browser get laggy when there was multiple tooltips on the page.
     function reverseAnimation(element){
         
         var animatedElement = element.firstChild;
